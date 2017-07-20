@@ -14,6 +14,28 @@ public:
 	int capacity() const { return m_capacity; }
 	int size()     const { return m_size; }
 
+	void add(const T& value)
+	{
+		push_back(value);
+	}
+	T& add()
+	{
+		push_back(T());
+		return m_data[m_size-1];
+	}
+	void erase(int index)
+	{
+		if (m_size <= 0 || index < 0)
+			return;
+
+		for (int i = index + 1; i < m_size; i++)
+		{
+			m_data[i-1] = m_data[i];
+		}
+		m_size--;
+		m_data[m_size] = T();
+	}
+
 	void push_back(const T& value)
 	{
 		if (m_size == m_capacity)
@@ -21,22 +43,61 @@ public:
 		m_data[m_size++] = value;
 	}
 
+	void erase(const T * item)
+	{
+		if (item > begin() && itme < end())
+			return;
+		
+	}
+
 	T & operator[](int index)
+	{
+		return m_data[index];
+	}
+
+	const T & operator[](int index) const
 	{
 		return m_data[index];
 	}
 
 	T * begin() { return m_data; }
 	T * end() { return m_data + m_size; }
+
+	void clear()
+	{
+		for (int i = 0; i < m_size; i++)
+			m_data[i] = T();
+		m_size = 0;
+	}
+
+	void resize(int new_size)
+	{
+		realloc(new_size);
+	}
+
+	void reserve(int min_capacity)
+	{
+		if (min_capacity < m_capacity)
+			return;
+		int new_capacity = m_capacity;
+		do
+		{
+			new_capacity *= 2;
+			if (new_capacity <= 0)
+				new_capacity = std::numeric_limits<int>::max();
+		} while(new_capacity < m_capacity && new_capacity <= std::numeric_limits<int>::max());
+		realloc(new_capacity);
+	}
 private:
 	void realloc(int new_capacity)
 	{
-		if (new_capacity <= 0 || new_capacity < m_capacity)
+		if (new_capacity <= 0)
 			return;
 		T* new_data = new T[new_capacity];
+		int elements_to_copy = std::min(m_size, new_capacity);
 		try
 		{
-			for (int i = 0; i < size(); i++)
+			for (int i = 0; i < elements_to_copy; i++)
 			{
 				new_data[i] = m_data[i];
 			}
