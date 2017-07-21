@@ -1,4 +1,5 @@
 #include <limits>
+#include <algorithm>
 
 template<typename T> class myvector
 {
@@ -11,6 +12,28 @@ public:
 	~myvector()
 	{
 		delete[] m_data;
+	}
+
+	myvector(const myvector<T>& rhs)
+		: m_data(nullptr), m_capacity(0), m_size(0)
+	{
+		realloc(rhs.capacity());
+		for(int i = 0; i < rhs.size(); i++)
+		{
+			m_data[i] = rhs[i];
+			m_size++;
+		}
+	}
+
+	myvector<T>& operator=(const myvector<T>& rhs)
+	{
+		realloc(rhs.capacity());
+		for(int i = 0; i < rhs.size(); i++)
+		{
+			m_data[i] = rhs[i];
+			m_size++;
+		}
+		return *this;
 	}
 
 	int capacity() const { return m_capacity; }
