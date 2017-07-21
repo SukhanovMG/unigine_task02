@@ -1,3 +1,5 @@
+#include <limits>
+
 template<typename T> class myvector
 {
 public:
@@ -45,9 +47,11 @@ public:
 
 	void erase(const T * item)
 	{
-		if (item > begin() && itme < end())
+		if (item < begin() && item >= end())
 			return;
-		
+		std::ptrdiff_t diff = std::distance((const T*)begin(), item);
+		if (diff > 0)
+			erase((int) diff);
 	}
 
 	T & operator[](int index)
